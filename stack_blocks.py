@@ -1,60 +1,29 @@
 from Block import Block
 import numpy
-from collections import OrderedDict
 
 total_levels = 3
 height = 1
 
 
-# make directed graph of blocks
-# only vertical forces going "up" are counted
-# gravitational force is also unit size
-
-
-# class multiGraph:
-#     '''create force graph from blocks'''
-#     def __init__(self, blocks):
-#         self.blocks = blocks # list of blocks
-#         n = len(blocks)
-#         # self.matrix = numpy.array([[0 for i in range(n)] for i in range(n)])
-#         blocks = reverse(sorted(blocks, key = lambda block: (block.y, block.x)))
-
-
-def calculateWeights(weights, blocks_dict, blocks): 
-    # y_values = list(reversed(sorted(blocks_dict.values())))
-    # for level, y in enumerate(y_values):
-        # if len()
-    for block in blocks:
-        if weights[block] != -1: # weight already defined
-            continue
-        if len(block.neighbors) == 0:
+def calculateWeights(weights, total_levels, blocks): # really the normal force
+    blocks_reverse_sorted = list(reversed(sorted(blocks, key = lambda block: (block.y, block.x))))
+    for block in blocks_reverse_sorted:
+        if block.y == total_levels -1:
             weights[block] = 1
         else:
-            for i in neighbors:
-                if weights[i] == -1:
-                    weights[i] # TODO
-                weights[block] += weights[i]
-          
+            # weight = weight of each neighbor * len of contact with neighbor
+            weights[block] = 1 + sum([weights[i] * (1-abs(block.x - i.x)) for i in block.neighbors])
+    
 def checkStability(blocks):
-    # upwardForce = [0 for block in blocks] # normal forces applied TO each block
-    # weight = [1 for block in blocks] # update in backward order
-    # for i, block in enumerate(blocks):
-    #     # if no block on top: # make func called findNeighbors
-    #     #     upwardForce[i] = 0
-    #     for each bottom neighbor of block:
-    #         upwardForce[i] = contactArea *
-    # blocks_reverse = list(reversed(sorted(blocks, key = lambda block: (block.y, block.x))))
-    blocks_dict = dict()
-    for block in blocks:
-        if not blocks_dict[blocks.y]:
-            blocks_dict[blocks.y] = {}
-        blocks_dict[block.y].update({block.x: block})
-    # top_blocks = list(blocks_dict[total_levels-1].values())
-    # unvisited_blocks = {}
-    # [unvisited_blocks.update({block: False}) for block in blocks]
+    # blocks_dict = dict()
+    # for block in blocks:
+    #     if not blocks_dict[blocks.y]:
+    #         blocks_dict[blocks.y] = {}
+    #     blocks_dict[block.y].update({block.x: block})
     weights = {}
     [weights.update({block: -1}) for block in blocks] # weight exerted down by a block
-    weights = calculateWeights(weights, blocks_dict, blocks)
+    calculateWeights(weights, total_levels, blocks)
+    
     
 
 
