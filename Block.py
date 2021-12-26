@@ -6,6 +6,6 @@ class Block:
         self.x = x
         self.y = y
         self.neighbors = []
-    def addNeighbor(self, block): # only add neighbors resting on top of block
+    def addNeighbor(self, block): # only top and bottom neighbors are important
         self.neighbors.append(block)
 
