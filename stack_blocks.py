@@ -28,6 +28,7 @@ def checkStability(blocks):
     calculateWeights(weights, total_levels, blocks)
     epsilon = 0.0005
     # balance forces and momentum
+    print(weights.values())
     
     for block in blocks:
         for neighbor in block.neighbors:
@@ -51,6 +52,7 @@ def checkStability(blocks):
                     top_neighbors_momentums.append(weights[i] * contact_distance * halfway_point_i)
             weight_diff = sum(bottom_neighbors_weights) - sum(top_neighbors_weights)
             momentum_diff = sum(bottom_neighbors_momentums) - sum(top_neighbors_momentums)
+            print(bottom_neighbors_weights)
             assert(weight_diff <= 1 + epsilon and weight_diff >= 1-epsilon)
             assert(momentum_diff <= block.x + 0.5 + epsilon and momentum_diff >= block.x + 0.5 - epsilon)
             for i in weights.values():
@@ -68,5 +70,11 @@ def checkStability(blocks):
         # momentum_diff = bottom_neighbors_momentum - top_neighbors_momentum
         # assert(momentum_diff <= block.x + 0.5 + epsilon and momentum_diff >= block.x + 0.5 - epsilon)
                 
-            
-checkStability([Block(1,1),Block(1,2),Block(1,3)])
+block1 = Block(-5/6, 0)
+block2 = Block(-1+(1/4+1/6), 1)
+block3 = Block(-1/12, 2)
+block1.addNeighbor(block2)
+block2.addNeighbor(block1)
+block2.addNeighbor(block3)
+block3.addNeighbor(block2)
+checkStability([block1, block2, block3])
