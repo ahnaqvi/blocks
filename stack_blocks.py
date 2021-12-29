@@ -1,31 +1,25 @@
 from Block import Block
-import numpy
 
 total_levels = 3
-height = 1
 
-
-def calculateWeights(weights, total_levels, blocks): # really the normal force
-    blocks_reverse_sorted = list(reversed(sorted(blocks, key = lambda block: (block.y, block.x))))
-    for block in blocks_reverse_sorted:
-        if block.y == total_levels -1:
-            weights[block] = 1
-        else:
-            # weight = weight of each top neighbor * len of contact with neighbor
-            weights[block] = 1 + sum([weights[i] * (1-abs(block.x - i.x)) for i in block.neighbors if i.y > block.y])
+def calculateWeights(weights, blocks):
+    for block in blocks:
+        weights[block] = 1
+        for block2 in blocks:
+            if block1 == block2:
+                continue
+            if block2.y > block.y:
+                horizontal_distance = abs(block2.x - block.x)
+                if horizontal_distance < 1:
+                    weights[block] += 1-horizontal_distance # actual distance they're "touching" horizantally
 
 def halfway_point(block, neighbor):
     return (min(block.x, neighbor.x) + 1 - max(block.x, neighbor.x))/2
     
 def checkStability(blocks):
-    # blocks_dict = dict()
-    # for block in blocks:
-    #     if not blocks_dict[blocks.y]:
-    #         blocks_dict[blocks.y] = {}
-    #     blocks_dict[block.y].update({block.x: block})
     weights = {}
     [weights.update({block: -1}) for block in blocks] # weight exerted down by a block
-    calculateWeights(weights, total_levels, blocks)
+    calculateWeights(weights, blocks)
     epsilon = 0.0005
     # balance forces and momentum
     print(weights.values())
